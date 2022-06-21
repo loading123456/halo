@@ -38,6 +38,7 @@ app.get("/", (req, res)=>{
     res.sendFile(path.join(__dirname, "view/index.html"))
 
     fs.readdir("public", (err, data)=>{
+      console.log(data)
       if(data!=undefined){
         data.forEach( n => {
           fs.rmSync("public/"+n, { recursive: true, force: true });
