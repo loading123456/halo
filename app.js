@@ -16,15 +16,24 @@ app.use("/public", express.static(path.join(__dirname, 'public')))
 
 
 app.get("/", (req, res)=>{
-  // fs.readdir("/storage/emulated/0/halo/raw_stories", (err, stories)=>{
-  //   if(stories!=undefined){
-  //     stories.forEach(story=>{
-  //       if( ! fs.existsSync("/storage/emulated/nexus/halo/storage/stories/"+story)){
-  //         fs.rename("/storage/emulated/0/halo/raw_stories/"+story, "/storage/emulated/nexus/halo/storage/stories/"+story, (err)=>{})
-  //       }
-  //     })
-  //   }
-  // })
+  fs.readdir("/storage/emulated/0/halo/raw_stories", (err, stories)=>{
+    if(stories!=undefined){
+      stories.forEach(story=>{
+        if( ! fs.existsSync("/storage/emulated/nexus/halo/storage/stories/"+story)){
+          fs.rename("/storage/emulated/0/halo/raw_stories/"+story, "/storage/emulated/nexus/halo/storage/stories/"+story, (err)=>{})
+        }
+      })
+    }
+  })
+  fs.readdir("/storage/emulated/0/halo/tran_imgs", (err, stories)=>{
+    if(stories!=undefined){
+      stories.forEach(story=>{
+        if( ! fs.existsSync("/storage/emulated/nexus/halo/storage/tran_imgs/"+story)){
+          fs.rename("/storage/emulated/0/halo/tran_imgs/"+story, "/storage/emulated/nexus/halo/storage/tran_imgs/"+story, (err)=>{})
+        }
+      })
+    }
+  })
 
     res.sendFile(path.join(__dirname, "view/index.html"))
 
