@@ -180,6 +180,9 @@ function extract_imgs(req, res){
 
     action.on("close",()=>{
       exec(`mv ${story_name} /storage/emulated/0/halo/untran_imgs`,(err, data)=>{ 
+        if(err != null){
+          console.log(err)
+        }
         story_info["stage"] = "Extracted!"
         res.redirect("/")
         save()
