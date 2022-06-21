@@ -21,18 +21,21 @@ app.get("/", (req, res)=>{
   fs.readdir("/storage/emulated/0/halo/raw_stories", (err, stories)=>{
     if(stories!=undefined){
       stories.forEach(story=>{
-        if( ! fs.existsSync("/storage/emulated/nexus/halo/storage/stories/"+story)){
-          fs.rename("/storage/emulated/0/halo/raw_stories/"+story, "/storage/emulated/nexus/halo/storage/stories/"+story, (err)=>{})
+        if(  fs.existsSync("/storage/emulated/nexus/halo/storage/stories/"+story)){
+          fs.unlinkSync("/storage/emulated/nexus/halo/storage/stories/"+story)
         }
+        fs.rename("/storage/emulated/0/halo/raw_stories/"+story, "/storage/emulated/nexus/halo/storage/stories/"+story, (err)=>{})
       })
     }
   })
   fs.readdir("/storage/emulated/0/halo/tran_imgs", (err, stories)=>{
     if(stories!=undefined){
       stories.forEach(story=>{
-        if( ! fs.existsSync("/storage/emulated/nexus/halo/storage/tran_imgs/"+story)){
-          fs.rename("/storage/emulated/0/halo/tran_imgs/"+story, "/storage/emulated/nexus/halo/storage/tran_imgs/"+story, (err)=>{})
+        if(fs.existsSync("/storage/emulated/nexus/halo/storage/tran_imgs/"+story)){
+          fs.unlinkSync("/storage/emulated/nexus/halo/storage/tran_imgs/"+story)
         }
+        fs.rename("/storage/emulated/0/halo/tran_imgs/"+story, "/storage/emulated/nexus/halo/storage/tran_imgs/"+story, (err)=>{})
+        
       })
     }
   })
@@ -192,7 +195,7 @@ function extract_imgs(req, res){
     action.on("close",()=>{
       exec(`cp "/storage/emulated/nexus/halo/${story_name}.zip" "/storage/emulated/0/halo/untran_imgs"`, (err)=>console.log(err))
       exec(`rm -r '${story_name}.zip'`,  (err)=>console.log(err))
-      story_info["stage"] = "Extracted!"
+      story_info["stage"] = "Extract!"
       res.redirect("/")
       save()
 
@@ -214,7 +217,7 @@ function rename_imgs(req, res){
     let action = spawn("python3", ["python3/rename.py",story_name])
 
     action.on("close",()=>{
-      story_info["stage"] = "Renamed!"
+      story_info["stage"] = "Rename!"
       res.redirect("/")
       save()
     })
