@@ -1,12 +1,13 @@
 from copyreg import constructor
 import os
+from unicodedata import name
 import zipfile
 import json
 import shutil
 import sys
 import glob
 from PIL import Image
-import numpy
+
 
 data = {}
 file_name = sys.argv[1]
@@ -64,7 +65,11 @@ with zipfile.ZipFile("storage/stories/"+file_name+".zip", 'r') as zipObj:
 
 names_in_zip_1 = os.listdir(file_name)
 
-names_r = numpy.setdiff1d(names_in_zip, names_in_zip_1)
+names_r = []
+
+for item in names_in_zip_1:
+    if not item in names_in_zip:
+        names_r.append(item)
 
 for img_name in names_r:
     os.rename(file_name+"/"+img_name, img_name)
