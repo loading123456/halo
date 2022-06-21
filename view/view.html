@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+        #image {
+            max-height: 390px;
+        }
+        #index_tag{
+            position: absolute;
+            right: 0;
+            width: 75px;
+            height: 30px;
+            font-size: 25px;
+            border: 5px solid;
+            text-align:center;  
+        }
+        #left_btn, #right_btn{
+            position: absolute;
+            width: 400px;
+            height: 300px;
+            opacity:0
+        }
+        #left_btn {
+            background-color: aqua;
+            z-index: 2;
+            bottom: 0;
+        }
+        #right_btn {
+            background-color: aqua;
+            z-index: 2;
+            bottom: 0;
+            right: 0;
+        }
+    </style>
+    
+    <script>
+        let story_name
+      
+      window.addEventListener("load", ()=>{
+        var oReq = new XMLHttpRequest();
+        oReq.addEventListener("load", ()=>{
+            story_name = oReq.responseText
+            change_index(0)
+
+        });
+        oReq.open("GET", "/get_story_name_view");
+        oReq.send();
+        })
+
+        function change_index(new_index){
+            document.getElementById("image").src =  "http://"+window.location.href.split("/")[2] + "/public/"+story_name+`/${new_index}.jpg`
+
+            let input_tag = document.getElementById("index_tag")
+            input_tag.value = String(new_index)
+            input_tag.disabled = true
+            input_tag.disabled = false
+        }
+
+    </script>
+</head>
+<body>
+    <input type="text" id="index_tag" value="0"  onchange="change_index(parseInt(this.value))" onClick="this.select()" >
+    <center>
+        <img  alt="" id="image">
+    </center>
+    <button id="left_btn" onclick="change_index(parseInt(document.getElementById('index_tag').value)-1);"></button>
+    <button id="right_btn" onclick="change_index(parseInt(document.getElementById('index_tag').value)+1);"></button>
+</body>
+</html>

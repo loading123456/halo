@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <style>
+        #save_btn {
+            display: block;
+            position: absolute;
+            width: 100px;
+            height: 50px;
+            background-color: aqua;
+            text-align: center;
+            font-size: 30px;
+            /* bottom: 50px; */
+            top: 0;
+            right: 0;
+        }
+        #save_btn:focus {
+            background-color: rgb(27, 177, 27);
+        }
+        body {
+        z-index: -1;
+        background-color: RGB(198, 135, 103);
+        }
+        #image {
+            display: block;
+            margin-top: 25px;
+            margin-left: 0;
+            max-width: 360px;
+            border-style: solid;
+            border-width: 10px;
+            border-color: black;
+            /* max-height:550px; */
+            background-color: brown;
+        }
+        #index_tag {
+            left: 0;
+            top: 5;
+            width: 75px;
+            height: 30px;
+            font-size: 25px;
+            border: 5px solid;
+            text-align:center;
+        }
+        .move_btn {
+            width: 197.5px;
+            font-size: 30px;
+            height: 355px;
+            position: absolute;
+            bottom: 0px;
+            opacity: 0.5
+        }
+        #last_btn{
+            left: 0;
+        }
+        #next_btn {
+            right: 0;
+        }
+
+
+    </style>
+
+    <script>
+        let story_name
+        let index
+        let is_empty
+        let pages_number
+        const socket = new WebSocket('ws://'+window.location.href.split("/")[2]); 
+
+        
+
+// Connection opened
+        socket.addEventListener('open', function (event) {
+            console.log('Connected to WS Server')
+            socket.send("init_page|| ")
+        });
+
+// Listen for messages
+        socket.addEventListener('message', function (event) {
+            let func_name = event.data.split("||")[0]
+            let data = event.data.split("||")[1]
+            window[func_name](data)
+        });
+        
+
+        function init_page(data){
+            story_name = data.split(',')[0]
+            pages_number = data.split(",")[1]
+        }
+
+
+        function load_page_info(data){
+            index = data.split(',')[0]
+            is_empty = (data.split(',')[1] == 'true')
+            document.getElementById("image").src = "http://"+window.location.href.split("/")[2] + "/public/"+story_name+`/${index}.jpg`
+            document.getElementById("index_tag").value = String(index)
+            check_empty()
+        }
+        
+        function save_file(){
+            socket.send("save|| ")
+        }
+
+// Thay doi trang
+        function change_index(new_index){
+            if( new_index>=0 && new_index<pages_number){
+                index = new_index
+                socket.send(`change_index||${index}`)
+            }
+            
+            let input_tag = document.getElementById("index_tag")
+            input_tag.value = String(index)
+            input_tag.disabled = true
+            input_tag.disabled = false
+        }
+        
+// Danh dau
+        function tick(){
+            socket.send("tick|| ")
+            change_index(parseInt(index)+1)
+            is_empty = !is_empty
+        }
+// Dieu chinh loading spinner khi load xong anh
+
+// Kiem tra de hien thi da xem hay da tick chua
+        function check_empty(){
+            let image_tag = document.getElementById("image")
+            if (is_empty){
+                image_tag.style.borderColor = "red"
+            }
+            else{
+                image_tag.style.borderColor = "green"
+            }
+        }
+
+
+
+    </script>
+
+</head>
+<body>
+    <button id="save_btn" onclick="save_file()">Save</button>
+    <center>
+        <input type="text" id="index_tag"  onchange="change_index(parseInt(this.value))" onClick="this.select()" >
+        <img  alt="" id="image"  onclick="tick()">
+    </center>
+    <button id="last_btn" class="move_btn" onclick="change_index(parseInt(document.getElementById('index_tag').value)-1);"></button>
+    <button id="next_btn" class="move_btn" onclick="change_index(parseInt(document.getElementById('index_tag').value)+1);"></button>
+</body>
+</html>
