@@ -213,7 +213,7 @@ function rename_imgs(req, res){
 
     action.on("close",()=>{
       story_info["stage"] = "Renamed!"
-      res.send("<h1>Story was Renamed!</h1>")
+      res.redirect("/")
       save()
     })
     action.stderr.on("data", (err)=>{
@@ -230,7 +230,7 @@ function view_story(req,res){
     story_name = req.params.story_name
     if( fs.existsSync("storage/jsons/"+story_name+".json")  ){
       load_data()
-      if( fs.existsSync("storage/rename_imgs") ){
+
         fs.rmSync("public/"+req.params.story_name, { recursive: true, force: true })
         let action = spawn("python3", ["python3/view.py",story_name])
         story_info["stage"] = "View!"
@@ -243,8 +243,7 @@ function view_story(req,res){
         action.stderr.on("data", (err)=>{
           console.log(String(err))
         })
-      }
-      else res.send("<h1>Story must rename before!</h1>")
+
     }
     else res.send("<h1>Story was not formated!</h1>")
 }
