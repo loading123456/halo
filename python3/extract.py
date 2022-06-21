@@ -29,4 +29,3 @@ for k in keys:
         out_data.write(str(k)+".jpg")
         os.remove(str(k)+".jpg")
 shutil.rmtree(file_name)
-os.rename(file_name+".zip", "/storage/emulated/0/halo/untran_imgs/"+file_name+".zip")

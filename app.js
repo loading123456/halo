@@ -14,16 +14,17 @@ app.use("/public", express.static(path.join(__dirname, 'public')))
 
 
 
+
 app.get("/", (req, res)=>{
-  fs.readdir("/storage/emulated/0/halo/raw_stories", (err, stories)=>{
-    if(stories!=undefined){
-      stories.forEach(story=>{
-        if( ! fs.existsSync("/storage/emulated/nexus/halo/storage/stories/"+story)){
-          fs.rename("/storage/emulated/0/halo/raw_stories/"+story, "/storage/emulated/nexus/halo/storage/stories/"+story, (err)=>{})
-        }
-      })
-    }
-  })
+  // fs.readdir("/storage/emulated/0/halo/raw_stories", (err, stories)=>{
+  //   if(stories!=undefined){
+  //     stories.forEach(story=>{
+  //       if( ! fs.existsSync("/storage/emulated/nexus/halo/storage/stories/"+story)){
+  //         fs.rename("/storage/emulated/0/halo/raw_stories/"+story, "/storage/emulated/nexus/halo/storage/stories/"+story, (err)=>{})
+  //       }
+  //     })
+  //   }
+  // })
 
     res.sendFile(path.join(__dirname, "view/index.html"))
 
@@ -178,9 +179,12 @@ function extract_imgs(req, res){
     let action = spawn("python3", ["python3/extract.py",story_name])
 
     action.on("close",()=>{
-      story_info["stage"] = "Extracted!"
-      res.redirect("/")
-      save()
+      exec(`mv ${story_name} /storage/emulated/0/halo/untran_imgs`,(err, data)=>{ 
+        story_info["stage"] = "Extracted!"
+        res.redirect("/")
+        save()
+      })
+
     })
     action.stderr.on("data", (err)=>{
       console.log(String(err))
