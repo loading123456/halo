@@ -62,7 +62,7 @@
             }
             else{
                 img_tag.style.width = ""
-                img_tag.style.height = '300px'
+                img_tag.style.height = '295px'
             }
         }
     </script>
@@ -70,7 +70,7 @@
 <body>
     <input type="text" id="index_tag" value="0"  onchange="change_index(parseInt(this.value))" onClick="this.select()" >
     <center>
-        <img  alt="" id="image">
+        <img  alt="" id="image" onload="set_size_img(this)">
     </center>
     <button id="left_btn" onclick="change_index(parseInt(document.getElementById('index_tag').value)-1);"></button>
     <button id="right_btn" onclick="change_index(parseInt(document.getElementById('index_tag').value)+1);"></button>

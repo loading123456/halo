@@ -10,23 +10,34 @@
         #img_tag {
             display: block;
             overflow: hidden;
-            max-width: 800px;
+        
             background-color: red;
-            width: 800px;
-            
+            /* width: 800px; */
+            /* height: 295px; */
 
         }
     </style>
     <script>
 
         window.addEventListener("click", ()=>{
-            document.getElementById("img_tag").src = "/public/Raw.png"
+            document.getElementById("img_tag").src = "/public/test1.jpg"
         })
+
+        function set_size_img(img_tag){
+            if(img_tag.naturalWidth/ img_tag.naturalHeight > 2.16 ){
+                img_tag.style.width = "800px"
+                img_tag.style.height = ''
+            }
+            else{
+                img_tag.style.width = ""
+                img_tag.style.height = '295px'
+            }
+        }
     </script>
 </head>
 <body>
     <div>
-        <img src="/public/File_20220619-153507.jpg" alt="" id="img_tag">
+        <img src="/public/test.jpg" alt="" id="img_tag" onload="set_size_img(this)">
     </div>
 </body>
 </html>

@@ -13,7 +13,9 @@ const {spawn, exec} = require("child_process")
 app.use("/public", express.static(path.join(__dirname, 'public')))
 
 
-
+app.get("/test", (req, res)=>{
+  res.sendFile(path.join(__dirname, "view/test.html"))
+})
 
 app.get("/", (req, res)=>{
   fs.readdir("/storage/emulated/0/halo/raw_stories", (err, stories)=>{
@@ -38,7 +40,6 @@ app.get("/", (req, res)=>{
     res.sendFile(path.join(__dirname, "view/index.html"))
 
     fs.readdir("public", (err, data)=>{
-      console.log(data)
       if(data!=undefined){
         data.forEach( n => {
           fs.rmSync("public/"+n, { recursive: true, force: true });
