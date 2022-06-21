@@ -36,10 +36,6 @@ app.get("/", (req, res)=>{
     })
 })
 
-app.get("/insert_stories", (req, res)=>{
-
-  res.redirect("/")
-})
 
 app.get("/get_story_names", (req, res)=>{
     get_story_names(req, res)
@@ -141,7 +137,7 @@ function format_story(req, res){
   story_name = req.params.story_name
 
   if( fs.existsSync("storage/jsons/"+story_name+".json")){
-    res.send("<h1>You formated</h1>")
+    res.redirect("/")
   }
   else{
       let action = spawn("python3", ["python3/format.py", story_name])
@@ -150,7 +146,7 @@ function format_story(req, res){
         console.log(String(err))
       })
       action.on("close", ()=>{
-        res.send("<h1>Story was formated!</h1>")
+        res.redirect("/")
       })
   }
 }
@@ -183,7 +179,7 @@ function extract_imgs(req, res){
 
     action.on("close",()=>{
       story_info["stage"] = "Extracted!"
-      res.send("<h1>Story was extracted!</h1>")
+      res.redirect("/")
       save()
     })
     action.stderr.on("data", (err)=>{
