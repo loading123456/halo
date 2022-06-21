@@ -13,9 +13,18 @@ const {spawn, exec} = require("child_process")
 app.use("/public", express.static(path.join(__dirname, 'public')))
 
 
-app.get("/test",(req, res)=>res.sendFile(path.join(__dirname, "view/test.html")))
 
 app.get("/", (req, res)=>{
+  fs.readdir("/storage/emulated/0/halo/raw_stories", (err, stories)=>{
+    if(stories!=undefined){
+      stories.forEach(story=>{
+        if( ! fs.existsSync("/storage/emulated/nexus/halo/storage/stories/"+story)){
+          fs.rename("/storage/emulated/0/halo/raw_stories/"+story, "/storage/emulated/nexus/halo/storage/stories/"+story, (err)=>{})
+        }
+      })
+    }
+  })
+
     res.sendFile(path.join(__dirname, "view/index.html"))
 
     fs.readdir("public", (err, data)=>{
@@ -28,13 +37,7 @@ app.get("/", (req, res)=>{
 })
 
 app.get("/insert_stories", (req, res)=>{
-  fs.readdir("/storage/emulated/0/stories", (err, stories)=>{
-    if(stories!=undefined){
-      stories.forEach(story=>{
-        fs.rename("/storage/emulated/0/stories/"+story, "/storage/emulated/nexus/halo/storage/stories/"+story, (err)=>{})
-      })
-    }
-  })
+
   res.redirect("/")
 })
 
