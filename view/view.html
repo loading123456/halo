@@ -7,9 +7,7 @@
     <title>Document</title>
 
     <style>
-        #image {
-            max-height: 390px;
-        }
+
         #index_tag{
             position: absolute;
             right: 0;
@@ -61,6 +59,16 @@
             input_tag.disabled = false
         }
 
+        function set_size_img(img_tag){
+            if(img_tag.naturalWidth/ img_tag.naturalHeight > 2.16 ){
+                img_tag.style.width = "800px"
+                img_tag.style.height = ''
+            }
+            else{
+                img_tag.style.width = ""
+                img_tag.style.height = '300px'
+            }
+        }
     </script>
 </head>
 <body>
