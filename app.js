@@ -179,7 +179,7 @@ function extract_imgs(req, res){
     let action = spawn("python3", ["python3/extract.py",story_name])
 
     action.on("close",()=>{
-      exec(`cp /storage/emulated/nexus/halo/'${story_name}.zip' /storage/emulated/0/halo/untran_imgs`, (err)=>console.log(err))
+      exec(`cp "/storage/emulated/nexus/halo/${story_name}.zip" "/storage/emulated/0/halo/untran_imgs"`, (err)=>console.log(err))
       exec(`rm -r '${story_name}.zip'`,  (err)=>console.log(err))
       story_info["stage"] = "Extracted!"
       res.redirect("/")
