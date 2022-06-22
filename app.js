@@ -136,12 +136,11 @@ function get_story_names(req, res){
     for (i in story_names){
       story_names[i] = story_names[i].replace(".zip", '')
 
-      // if(fs.existsSync("storage/jsons/"+story_names[i]+".json")){
-      //     let json_file = require("./storage/jsons/"+story_names[i]+".json" )
-      //     res_data[story_names[i]] = json_file["stage"]
-      // }
-      // else  
-      res_data[story_names[i]] = "Story is not format!"
+      if(fs.existsSync("storage/jsons/"+story_names[i]+".json")){
+          let json_file = require("./storage/jsons/"+story_names[i]+".json" )
+          res_data[story_names[i]] = json_file["stage"]
+      }
+      else  res_data[story_names[i]] = "Story is not format!"
     }
 
     res.send(JSON.stringify(res_data))
