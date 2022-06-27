@@ -34,7 +34,7 @@ function upload_stories(){
 }
 
 function format_stories(t, _stories){
-  if(stories.length > 0){
+  if(_stories.length > 0){
     let action = spawn("python3", ["python3/format.py", _stories[t].replace(".zip",'')])
 
     action.on("close", ()=>{
