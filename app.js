@@ -74,7 +74,7 @@ function upload_tran_imgs(){
 }
 
 
-upload_and_format_stories()
+upload_stories()
 
 app.get("/", (req, res)=>{
 
