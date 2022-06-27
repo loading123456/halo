@@ -14,76 +14,52 @@ app.use("/public", express.static(path.join(__dirname, 'public')))
 
 
 
-function upload_and_format_stories(){
+function upload_stories(){
   console.log("upload and format stories")
   exec(`cp /storage/emulated/0/halo/storage/stories/* /storage/emulated/nexus/halo/storage/stories`, (err, data)=>{
     if(err){
       console.log(err)
     }
-    else{
-      let t = 0
+
       fs.readdir("/storage/emulated/0/halo/storage/stories", (err, stories)=>{
         if(err){
           console.log(err)
         }
         else{
-          if(stories.length > 0){
-
-              let action = spawn("python3", ["python3/format.py", stories[t].replace(".zip",'')])
-              
-              action.stderr.on("data", (err)=>{
-                console.log(String(err))
-              })
-              
-              action.on("close", ()=>{
-                t++
-                if(t==stories.length){
-                  console.log("Full")
-                  exec("rm -r /storage/emulated/0/halo/storage/stories/*", (err, data)=>{
-                    if(err){
-                      console.log(err)
-                    }
-                    else{
-                      upload_tran_imgs()
-                    }
-                  })
-                }
-                else{
-                  console.log(t)
-                  action = spawn("python3", ["python3/format.py", stories[t].replace(".zip",'')])
-
-                  action.on("close", ()=>{
-                    t++
-                    if(t==stories.length){
-                      console.log("Full")
-                      exec("rm -r /storage/emulated/0/halo/storage/stories/*", (err, data)=>{
-                        if(err){
-                          console.log(err)
-                        }
-                        else{
-                          upload_tran_imgs()
-                        }
-                      })
-                    }
-                    else{
-                      console.log(t)
-                      action = spawn("python3", ["python3/format.py", stories[t].replace(".zip",'')])
-                    }
-                  })
-                }
-              })
-            
-          }
-          else{
-            upload_tran_imgs()
-          }
+          format_stories(0, stories)
         }
-  
       })
-    }
+    
   })
 }
 
+function format_stories(t, _stories){
+  if(stories.length > 0){
+    let action = spawn("python3", ["python3/format.py", _stories[t].replace(".zip",'')])
+
+    action.on("close", ()=>{
+      
+      if(t+1 == _stories.length){
+        console.log("Full")
+        exec("rm -r /storage/emulated/0/halo/storage/stories/*", (err, data)=>{
+          if(err){
+            console.log(err)
+          }
+    
+            upload_tran_imgs()
+          
+        })
+      }
+      else{
+        console.log(t)
+        format_stories(t+1, _stories)
+      }
+    })
+  }
+  else{
+    upload_tran_imgs()
+  }
+}
 
 function upload_tran_imgs(){
   console.log("upload tran_imgs")
@@ -340,6 +316,8 @@ global.tick = (data="")=>{
 global.save = (data="")=>{
     fs.writeFile("./storage/jsons/"+story_name+".json", JSON.stringify(story_info), (err)=>{})
 }
+
+
 
 
 // server.listen(3030, () => console.log(`Lisening on port :3030\n`))
