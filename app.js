@@ -14,48 +14,66 @@ app.use("/public", express.static(path.join(__dirname, 'public')))
 
 
 
+function upload_and_format_stories(){
+  exec(`cp /storage/emulated/0/halo/storage/stories/* /storage/emulated/nexus/halo/storage/stories`, (err, data)=>{
+    if(err){
+      console.log(err)
+    }
+    else{
+      let t = 0
+      fs.readdir("/storage/emulated/0/halo/storage/stories", (err, stories)=>{
+        if(err){
+          console.log(err)
+        }
+        else{
+          if(stories.length > 0){
+            for(let i=0; i<stories.length; i++){
+              let action = spawn("python3", ["python3/format.py", stories[i].replace(".zip",'')])
+              
+              action.stderr.on("data", (err)=>{
+                console.log(String(err))
+              })
+              
+              action.on("close", ()=>{
+                t++
+                if(t==stories.length){
+                  exec("rm -r /storage/emulated/0/halo/storage/stories/*", (err, data)=>{
+                    if(err){
+                      console.log(err)
+                    }
+                  })
+                }
+              })
+            }
+          }
+          else{
+            upload_tran_imgs()
+          }
+        }
+  
+      })
+    }
+  })
+}
+
+
+function upload_tran_imgs(){
+  exec(`mv /storage/emulated/0/halo/storage/tran_imgs/* /storage/emulated/nexus/halo/storage/tran_imgs`, (err, data)=>{
+    if(err){
+      console.log(err)
+    }
+    else{
+ 
+    }
+  })
+}
+
+
+upload_and_format_stories()
 
 app.get("/", (req, res)=>{
-  // Upload story and format
-  fs.readdir("/storage/emulated/0/halo/raw_stories", (err, stories)=>{
-    for(let i=0; i<stories.length; i++){
-      exec(`cp /storage/emulated/0/halo/raw_stories/'${stories[i]}' /storage/emulated/nexus/halo/storage/stories`,(err, data)=>{
-        if(err){
-          console.log(err)
-        }
-        else{
-          let action = spawn("python3", ["python3/format.py", stories[i].replace(".zip",'')])
 
-          action.stderr.on("data", (err)=>{
-            console.log(String(err))
-          })
-          
-          exec(`rm -r /storage/emulated/0/halo/raw_stories/'${stories[i]}'`, (err, data)=>{
-            if(err){
-              console.log(err)
-            }
-          })
-        }
-      })
-    }
-  })
 
-  fs.readdir("/storage/emulated/0/halo/tran_imgs", (err, stories)=>{
-    for(let i=0; i<stories.length; i++){
-      exec(`cp /storage/emulated/0/halo/tran_imgs/'${stories[i]}' /storage/emulated/nexus/halo/storage/tran_imgs`,(err, data)=>{
-        if(err){
-          console.log(err)
-        }
-        else{
-          exec(`rm -r /storage/emulated/0/halo/tran_imgs/'${stories[i]}'`, (err, data)=>{
-            if(err){
-              console.log(err)
-            }
-          })
-        }
-      })
-    }
-  })
 
     res.sendFile(path.join(__dirname, "view/index.html"))
 
