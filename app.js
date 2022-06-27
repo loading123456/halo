@@ -77,7 +77,7 @@ app.get("/", (req, res)=>{
 
   exec("rm -r public/*", (err, data)=>{
     if(err){
-      console.log(err)
+      console.log("error in line 80")
     }
   })
 
@@ -200,14 +200,14 @@ function extract_imgs(req, res){
     let action = spawn("python3", ["python3/extract.py",story_name])
 
     action.on("close",()=>{
-      exec(`cp /storage/emulated/nexus/halo/'${story_name}.zip' /storage/emulated/0/halo/untran_imgs`, (err)=>{
+      exec(`cp /storage/emulated/nexus/halo/'${story_name}.zip' /storage/emulated/0/halo/storage/untran_imgs`, (err)=>{
         if(err){
-          console.log(err)
+          console.log("error in line 205")
         }
         else{
           exec(`rm -r '${story_name}.zip'`,  (err)=>{
             if(err){
-              console.log(err)
+              console.log("error in line 210")
             }
             else{
               story_info["stage"] = "Extracting"
@@ -242,7 +242,7 @@ function rename_imgs(req, res){
     })
   }
   else{
-    res.send("<h1>Error rename!</h1>")
+    res.send("<h1>Not found img_trans!</h1>")
   }  
 }
 
