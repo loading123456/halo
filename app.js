@@ -42,6 +42,9 @@ function upload_and_format_stories(){
                     if(err){
                       console.log(err)
                     }
+                    else{
+                      upload_tran_imgs()
+                    }
                   })
                 }
                 else{
