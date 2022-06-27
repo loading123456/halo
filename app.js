@@ -67,9 +67,7 @@ function upload_tran_imgs(){
     if(err){
       console.log(err)
     }
-    else{
- 
-    }
+    server.listen(3030, () => console.log(`Lisening on port :3030\n`))
   })
 }
 
@@ -77,9 +75,6 @@ function upload_tran_imgs(){
 upload_stories()
 
 app.get("/", (req, res)=>{
-
-
-
     res.sendFile(path.join(__dirname, "view/index.html"))
 
   exec("rm -r public/*", (err, data)=>{
@@ -320,4 +315,3 @@ global.save = (data="")=>{
 
 
 
-// server.listen(3030, () => console.log(`Lisening on port :3030\n`))
