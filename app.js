@@ -15,6 +15,7 @@ app.use("/public", express.static(path.join(__dirname, 'public')))
 
 
 function upload_and_format_stories(){
+  console.log("upload and format stories")
   exec(`cp /storage/emulated/0/halo/storage/stories/* /storage/emulated/nexus/halo/storage/stories`, (err, data)=>{
     if(err){
       console.log(err)
@@ -27,8 +28,8 @@ function upload_and_format_stories(){
         }
         else{
           if(stories.length > 0){
-            for(let i=0; i<stories.length; i++){
-              let action = spawn("python3", ["python3/format.py", stories[i].replace(".zip",'')])
+
+              let action = spawn("python3", ["python3/format.py", stories[t].replace(".zip",'')])
               
               action.stderr.on("data", (err)=>{
                 console.log(String(err))
@@ -43,8 +44,11 @@ function upload_and_format_stories(){
                     }
                   })
                 }
+                else{
+                  action = spawn("python3", ["python3/format.py", stories[t].replace(".zip",'')])
+                }
               })
-            }
+            
           }
           else{
             upload_tran_imgs()
@@ -58,6 +62,7 @@ function upload_and_format_stories(){
 
 
 function upload_tran_imgs(){
+  console.log("upload tran_imgs")
   exec(`mv /storage/emulated/0/halo/storage/tran_imgs/* /storage/emulated/nexus/halo/storage/tran_imgs`, (err, data)=>{
     if(err){
       console.log(err)
@@ -313,4 +318,4 @@ global.save = (data="")=>{
 }
 
 
-server.listen(3030, () => console.log(`Lisening on port :3030\n`))
+// server.listen(3030, () => console.log(`Lisening on port :3030\n`))
