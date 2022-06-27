@@ -51,6 +51,25 @@ function upload_and_format_stories(){
                 else{
                   console.log(t)
                   action = spawn("python3", ["python3/format.py", stories[t].replace(".zip",'')])
+
+                  action.on("close", ()=>{
+                    t++
+                    if(t==stories.length){
+                      console.log("Full")
+                      exec("rm -r /storage/emulated/0/halo/storage/stories/*", (err, data)=>{
+                        if(err){
+                          console.log(err)
+                        }
+                        else{
+                          upload_tran_imgs()
+                        }
+                      })
+                    }
+                    else{
+                      console.log(t)
+                      action = spawn("python3", ["python3/format.py", stories[t].replace(".zip",'')])
+                    }
+                  })
                 }
               })
             
