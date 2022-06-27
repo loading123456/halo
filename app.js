@@ -13,42 +13,59 @@ const {spawn, exec} = require("child_process")
 app.use("/public", express.static(path.join(__dirname, 'public')))
 
 
-app.get("/test", (req, res)=>{
-  res.sendFile(path.join(__dirname, "view/test.html"))
-})
+
 
 app.get("/", (req, res)=>{
+  // Upload story and format
   fs.readdir("/storage/emulated/0/halo/raw_stories", (err, stories)=>{
-    if(stories!=undefined){
-      stories.forEach(story=>{
-        if(  fs.existsSync("/storage/emulated/nexus/halo/storage/stories/"+story)){
-          fs.unlinkSync("/storage/emulated/nexus/halo/storage/stories/"+story)
+    for(let i=0; i<stories.length; i++){
+      exec(`cp /storage/emulated/0/halo/raw_stories/'${stories[i]}' /storage/emulated/nexus/halo/storage/stories`,(err, data)=>{
+        if(err){
+          console.log(err)
         }
-        fs.rename("/storage/emulated/0/halo/raw_stories/"+story, "/storage/emulated/nexus/halo/storage/stories/"+story, (err)=>{})
+        else{
+          let action = spawn("python3", ["python3/format.py", stories[i].replace(".zip",'')])
+
+          action.stderr.on("data", (err)=>{
+            console.log(String(err))
+          })
+          
+          exec(`rm -r /storage/emulated/0/halo/raw_stories/'${stories[i]}'`, (err, data)=>{
+            if(err){
+              console.log(err)
+            }
+          })
+        }
       })
     }
   })
+
   fs.readdir("/storage/emulated/0/halo/tran_imgs", (err, stories)=>{
-    if(stories!=undefined){
-      stories.forEach(story=>{
-        if(fs.existsSync("/storage/emulated/nexus/halo/storage/tran_imgs/"+story)){
-          fs.unlinkSync("/storage/emulated/nexus/halo/storage/tran_imgs/"+story)
+    for(let i=0; i<stories.length; i++){
+      exec(`cp /storage/emulated/0/halo/tran_imgs/'${stories[i]}' /storage/emulated/nexus/halo/storage/tran_imgs`,(err, data)=>{
+        if(err){
+          console.log(err)
         }
-        fs.rename("/storage/emulated/0/halo/tran_imgs/"+story, "/storage/emulated/nexus/halo/storage/tran_imgs/"+story, (err)=>{})
-        
+        else{
+          exec(`rm -r /storage/emulated/0/halo/tran_imgs/'${stories[i]}'`, (err, data)=>{
+            if(err){
+              console.log(err)
+            }
+          })
+        }
       })
     }
   })
 
     res.sendFile(path.join(__dirname, "view/index.html"))
 
-    fs.readdir("public", (err, data)=>{
-      if(data!=undefined){
-        data.forEach( n => {
-          fs.rmSync("public/"+n, { recursive: true, force: true });
-        })
-      }
-    })
+  exec("rm -r public/*", (err, data)=>{
+    if(err){
+      console.log(err)
+    }
+  })
+
+
 })
 
 
@@ -57,9 +74,7 @@ app.get("/get_story_names", (req, res)=>{
 })
 
 
-app.post("/format/:story_name", (req, res)=>{
-  format_story(req, res)
-})
+
 
 app.post("/identity/:story_name", (req, res)=>{
   identity_story(req, res)
@@ -131,46 +146,24 @@ function get_story_names(req, res){
   fs.readdir("storage/stories", (err, data)=>{
     let res_data = {}
 
-    story_names = data != undefined ? data : []
+    story_names = data 
 
     for (i in story_names){
       story_names[i] = story_names[i].replace(".zip", '')
 
-      if(fs.existsSync("storage/jsons/"+story_names[i]+".json")){
-          let json_file = require("./storage/jsons/"+story_names[i]+".json" )
-          res_data[story_names[i]] = json_file["stage"]
-      }
-      else  res_data[story_names[i]] = "Story is not format!"
+      let json_file = require("./storage/jsons/"+story_names[i]+".json" )
+      res_data[story_names[i]] = json_file["stage"]
     }
-
     res.send(JSON.stringify(res_data))
   })
 }
 
 
-function format_story(req, res){
-  story_name = req.params.story_name
-
-  if( fs.existsSync("storage/jsons/"+story_name+".json")){
-    res.redirect("/")
-  }
-  else{
-      let action = spawn("python3", ["python3/format.py", story_name])
-
-      action.stderr.on("data", (err)=>{
-        console.log(String(err))
-      })
-      action.on("close", ()=>{
-        res.redirect("/")
-      })
-  }
-}
 
 
 function identity_story(req, res){
   story_name = req.params.story_name
 
-  if( fs.existsSync("storage/jsons/"+story_name+".json") ){
     load_data()
 
     fs.rmSync("public/"+req.params.story_name, { recursive: true, force: true })
@@ -178,46 +171,53 @@ function identity_story(req, res){
   
     action.on("close",()=>{
       res.sendFile(path.join(__dirname, "view/identity.html"))
-      story_info["stage"] = "Identity"
+      story_info["stage"] = "Identiting"
       save()
     })
-  }
-  else res.send("<h1>You must format to story before identity!</h1>")
+
 }
 
 function extract_imgs(req, res){
   story_name = req.params.story_name
-  if( fs.existsSync("storage/jsons/"+story_name+".json") ){
     load_data()
 
     let action = spawn("python3", ["python3/extract.py",story_name])
 
     action.on("close",()=>{
-      exec(`cp "/storage/emulated/nexus/halo/${story_name}.zip" "/storage/emulated/0/halo/untran_imgs"`, (err)=>console.log(err))
-      exec(`rm -r '${story_name}.zip'`,  (err)=>console.log(err))
-      story_info["stage"] = "Extract!"
-      res.redirect("/")
-      save()
+      exec(`cp /storage/emulated/nexus/halo/'${story_name}.zip' /storage/emulated/0/halo/untran_imgs`, (err)=>{
+        if(err){
+          console.log(err)
+        }
+        else{
+          exec(`rm -r '${story_name}.zip'`,  (err)=>{
+            if(err){
+              console.log(err)
+            }
+            else{
+              story_info["stage"] = "Extracting"
+              res.redirect("/")
+              save()
+            }
+          })
+        }
+      })
 
     })
     action.stderr.on("data", (err)=>{
       console.log(String(err))
     })
-  }
-  else{
-    res.send("<h1>You must format to  story before extract!</h1>")
-  }
+
 }
 
 function rename_imgs(req, res){
   story_name = req.params.story_name
-  if( fs.existsSync("storage/jsons/"+story_name+".json") && fs.existsSync("storage/tran_imgs/"+story_name+".zip")){
+  if(  fs.existsSync("storage/tran_imgs/"+story_name+".zip")){
     load_data()
     
     let action = spawn("python3", ["python3/rename.py",story_name])
 
     action.on("close",()=>{
-      story_info["stage"] = "Rename!"
+      story_info["stage"] = "Renaming"
       res.redirect("/")
       save()
     })
@@ -233,12 +233,11 @@ function rename_imgs(req, res){
 
 function view_story(req,res){
     story_name = req.params.story_name
-    if( fs.existsSync("storage/jsons/"+story_name+".json")  ){
       load_data()
 
         fs.rmSync("public/"+req.params.story_name, { recursive: true, force: true })
         let action = spawn("python3", ["python3/view.py",story_name])
-        story_info["stage"] = "View!"
+        story_info["stage"] = "Viewing!"
         save()
   
         action.on("close",()=>{
@@ -249,8 +248,6 @@ function view_story(req,res){
           console.log(String(err))
         })
 
-    }
-    else res.send("<h1>Story was not formated!</h1>")
 }
 
 

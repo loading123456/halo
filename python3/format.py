@@ -41,9 +41,9 @@ for img_name in dirFiles:
     os.remove(str(i)+".jpg")
     i += 1
 
-data = {"stage":"formated", "page_info":{}, "index":0,"pages_number":pages_number}
+data = {"stage":"Identiting", "page_info":{}, "index":0,"pages_number":pages_number}
 for i in range(pages_number):
-    data["page_info"][str(i)] = {"is_empty":True, "is_readed":False}
+    data["page_info"][str(i)] = {"is_empty":True}
 
 
 with open("storage/jsons/"+file_name+".json", 'w') as f:
