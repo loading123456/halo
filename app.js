@@ -18,17 +18,16 @@ function upload_stories(){
   console.log("upload and format stories")
   exec(`cp /storage/emulated/0/halo/storage/stories/* /storage/emulated/nexus/halo/storage/stories`, (err, data)=>{
     if(err){
-      console.log(err)
+      console.log("error in line 21")
     }
 
-      fs.readdir("/storage/emulated/0/halo/storage/stories", (err, stories)=>{
-        if(err){
-          console.log(err)
-        }
-        else{
-          format_stories(0, stories)
-        }
-      })
+    fs.readdir("/storage/emulated/0/halo/storage/stories", (err, stories)=>{
+      if(err){
+        console.log("error in line 26")
+      }
+      
+      format_stories(0, stories)
+    })
     
   })
 }
@@ -38,12 +37,11 @@ function format_stories(t, _stories){
     let action = spawn("python3", ["python3/format.py", _stories[t].replace(".zip",'')])
 
     action.on("close", ()=>{
-      
       if(t+1 == _stories.length){
         console.log("Full")
         exec("rm -r /storage/emulated/0/halo/storage/stories/*", (err, data)=>{
           if(err){
-            console.log(err)
+            console.log("error in line 44")
           }
     
             upload_tran_imgs()
@@ -65,7 +63,7 @@ function upload_tran_imgs(){
   console.log("upload tran_imgs")
   exec(`mv /storage/emulated/0/halo/storage/tran_imgs/* /storage/emulated/nexus/halo/storage/tran_imgs`, (err, data)=>{
     if(err){
-      console.log(err)
+      console.log("error in line 66")
     }
     server.listen(3030, () => console.log(`Lisening on port :3030\n`))
   })
