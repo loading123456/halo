@@ -16,6 +16,7 @@ module.exports.get_story_names = (req, res)=>{
 
       res_data[i] = stories.stories[i]["stage"]
     }
+    console.log(res_data)
     res.send(JSON.stringify(res_data))
   
 }
