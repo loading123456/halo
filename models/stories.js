@@ -7,7 +7,7 @@ module.exports.load_stories = ()=>{
     let json_files = fs.readdirSync("./storage/jsons")
 
     for(let i=0; i<json_files.length; i++){
-        this.stories[json_files[i].replace(".json", '')] = fs.readFileSync(`./storage/jsons/${json_files[i]}`)
+        this.stories[json_files[i].replace(".json", '')] = JSON.parse(fs.readFileSync(`./storage/jsons/${json_files[i]}`))
     }
     console.log(this.stories)
 }
