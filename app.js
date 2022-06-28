@@ -24,12 +24,13 @@ function upload_stories(){
       fs.copyFileSync(`/storage/emulated/0/halo/stories/${raw_stories[i]}`, `storage/stories/${raw_stories[i].replaceAll(' ','_').replaceAll('-','_')}`)
       fs.unlinkSync(`/storage/emulated/0/halo/stories/${raw_stories[i]}`)
     }
-    format_stories(0, raw_stories)
   }
+  format_stories(0, raw_stories)
 
 }
 
 function format_stories(t, _stories){
+  console.log("format stories")
   if(_stories.length > 0){
     let action = spawn("python3", ["python3/format.py", _stories[t].replace(".zip",'')])
 
