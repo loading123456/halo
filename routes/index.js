@@ -2,6 +2,8 @@ const express = require("express")
 const router = express.Router()
 const path = require("path")
 
+const actions = require("../controller/actions")
+
 
 router.get("/", (req, res)=>{
     res.sendFile(path.join(__dirname.replace("routes", ''), "views/index.html"))
@@ -11,7 +13,7 @@ router.get("/", (req, res)=>{
 
 
 router.get("/get_story_names", (req, res)=>{
-    // get_story_names(req, res)
+    actions.get_story_names(req, res)
 })
 
 
@@ -51,9 +53,7 @@ router.get("/close_server", (req, res)=>{
 
 })
 
-router.get('/download', function(req, res){
-  res.download(`${__dirname}/Halo.zip`); // Set disposition and send it.
-});
+
 
 
 module.exports = router
