@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router()
 const path = require("path")
 
-const actions = require("../controller/actions")
+const actions = require("../controllers/actions")
 
 
 router.get("/", (req, res)=>{
