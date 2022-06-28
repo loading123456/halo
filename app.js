@@ -1,35 +1,32 @@
 const express = require('express')
 const path = require("path")
-const app = express()
-const server = require('http').createServer(app);
+const router = express()
+const server = require('http').createServer(router);
 const WebSocket = require('ws');
 const fs = require("fs");
 const wss = new WebSocket.Server({ server:server });
 const {spawn, exec} = require("child_process")
 
 
+const index_route = require("./routes/index")
 
 
-app.use("/public", express.static(path.join(__dirname, 'public')))
-
+router.use("/public", express.static(path.join(__dirname, 'public')))
+router.use("/", index_route)
 
 
 function upload_stories(){
-  console.log("upload and format stories")
-  exec(`cp /storage/emulated/0/halo/storage/stories/* /storage/emulated/nexus/halo/storage/stories`, (err, data)=>{
-    if(err){
-      console.log("error in line 21")
-    }
+  console.log("upload stories")
+  let raw_stories = fs.readdirSync("/storage/emulated/0/halo/storage/stories")
 
-    fs.readdir("/storage/emulated/0/halo/storage/stories", (err, stories)=>{
-      if(err){
-        console.log("error in line 26")
-      }
-      
-      format_stories(0, stories)
-    })
-    
-  })
+  if(raw_stories.length > 0 ){
+    for(let i=0; i<raw_stories.length; i++){
+      fs.copyFileSync(`/storage/emulated/0/halo/stories/${raw_stories[i]}`, `storage/stories/${raw_stories[i].replaceAll(' ','_').replaceAll('-','_')}`)
+      fs.unlinkSync(`/storage/emulated/0/halo/stories/${raw_stories[i]}`)
+    }
+    format_stories(0, raw_stories)
+  }
+
 }
 
 function format_stories(t, _stories){
@@ -39,14 +36,7 @@ function format_stories(t, _stories){
     action.on("close", ()=>{
       if(t+1 == _stories.length){
         console.log("Full")
-        exec("rm -r /storage/emulated/0/halo/storage/stories/*", (err, data)=>{
-          if(err){
-            console.log("error in line 44")
-          }
-    
-            upload_tran_imgs()
-          
-        })
+        upload_tran_imgs()
       }
       else{
         console.log(t)
@@ -61,74 +51,17 @@ function format_stories(t, _stories){
 
 function upload_tran_imgs(){
   console.log("upload tran_imgs")
-  exec(`mv /storage/emulated/0/halo/storage/tran_imgs/* /storage/emulated/nexus/halo/storage/tran_imgs`, (err, data)=>{
-    if(err){
-      console.log("error in line 66")
-    }
-    server.listen(3030, () => console.log(`Lisening on port :3030\n`))
-  })
+
+  let img_trans = fs.readdirSync("/storage/emulated/0/halo/storage/tran_imgs")
+
+  for(let i=0; i<img_trans.length; i++){
+    fs.renameSync(`/storage/emulated/0/halo/storage/tran_imgs/${img_trans[i]}`, `storage/tran_imgs/${img_trans[i]}`)
+  }
+  server.listen(3030, () => console.log(`Lisening on port :3030\n`))
 }
 
 
 upload_stories()
-
-app.get("/", (req, res)=>{
-    res.sendFile(path.join(__dirname, "view/index.html"))
-
-  exec("rm -r public/*", (err, data)=>{
-    if(err){
-      console.log("error in line 80")
-    }
-  })
-
-
-})
-
-
-app.get("/get_story_names", (req, res)=>{
-    get_story_names(req, res)
-})
-
-
-
-
-app.post("/identity/:story_name", (req, res)=>{
-  identity_story(req, res)
-})
-
-app.post("/extract/:story_name", (req, res)=>{
-  extract_imgs(req, res)
-})
-
-
-app.post("/rename/:story_name", (req, res)=>{
-  rename_imgs(req, res)
-})
-
-app.post("/view/:story_name", (req, res)=>{
-  view_story(req, res)
-})
-
-app.get("/get_story_name_view", (req, res)=>{
-  res.send(story_name)
-})
-
-app.post("/delete/:story_name", (req, res)=>{
-  delete_story(req, res)
-})
-
-app.get("/close_server", (req, res)=>{
-  if(story_info !=undefined){
-    save()
-  }
-  console.log("CLose")
-  process.exit()
-
-})
-
-app.get('/download', function(req, res){
-  res.download(`${__dirname}/Halo.zip`); // Set disposition and send it.
-});
 
 
 wss.on('connection', function connection(ws) {
