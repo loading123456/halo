@@ -12,10 +12,6 @@ module.exports.get_story_names = (req, res)=>{
   
     let res_data = {}
 
-    story_names = data 
-
-
-
     for (i in stories.stories){
 
       res_data[i] = stories.stories[i]["stage"]
