@@ -22,7 +22,7 @@ function upload_stories(){
 
   if(raw_stories.length > 0 ){
     for(let i=0; i<raw_stories.length; i++){
-      console.log(raw_stories[i].replaceAll(' ','_').replaceAll('-','_'))
+      console.log(`${raw_stories[i]}`.replaceAll(' ','_').replaceAll('-','_'))
       // fs.copyFileSync(`/storage/emulated/0/halo/storage/stories/${raw_stories[i]}`, `storage/stories/${raw_stories[i].replaceAll(' ','_').replaceAll('-','_')}`)
       // fs.unlinkSync(`/storage/emulated/0/halo/storage/stories/${raw_stories[i]}`)
     }
