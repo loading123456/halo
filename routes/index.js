@@ -4,7 +4,7 @@ const path = require("path")
 
 
 router.get("/", (req, res)=>{
-    res.sendFile(path.join(__dirname, "views/index.html"))
+    res.sendFile(path.join(__dirname.replace("routes", ''), "views/index.html"))
 
 
 })
