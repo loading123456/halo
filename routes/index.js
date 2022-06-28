@@ -4,7 +4,8 @@ const router = express.Router()
 
 
 router.get("/", (req, res)=>{
-    res.sendFile("../views/index.html")
+    res.sendFile(path.join(__dirname, "views/index.html"))
+
 
 })
 
@@ -50,6 +51,9 @@ router.get("/close_server", (req, res)=>{
 
 })
 
+router.get('/download', function(req, res){
+  res.download(`${__dirname}/Halo.zip`); // Set disposition and send it.
+});
 
 
 module.exports = router
