@@ -16,7 +16,6 @@ module.exports.load_story = (story_name)=>{
 }
 
 module.exports.save = ()=>{
-    console.log("save in story")
     stories.stories[this.story_name].page_info = this.page_info
     stories.stories[this.story_name].index = this.index
     
