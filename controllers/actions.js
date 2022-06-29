@@ -51,6 +51,7 @@ module.exports.identity_story = (req, res)=>{
 
 module.exports.extract_imgs = (req, res)=>{
   let story_name = req.params.story_name
+  story.load_story(story_name)
 
   let action = spawn("python3", ["python3/extract.py",story_name])
 
@@ -70,6 +71,8 @@ module.exports.extract_imgs = (req, res)=>{
 
 module.exports.rename_imgs = (req, res)=>{
   let story_name = req.params.story_name
+  story.load_story(story_name)
+
   if(  fs.existsSync("storage/tran_imgs/"+story_name+".zip")){
     
     let action = spawn("python3", ["python3/rename.py",story_name])
@@ -91,7 +94,7 @@ module.exports.rename_imgs = (req, res)=>{
 
 module.exports.view_story = (req,res)=>{
     let story_name = req.params.story_name
-
+    story.load_story(story_name)
         fs.rmSync("public/"+story_name, { recursive: true, force: true })
         let action = spawn("python3", ["python3/view.py",story_name])
         stories.stories[story_name].stage = "Viewing!"
@@ -108,6 +111,7 @@ module.exports.view_story = (req,res)=>{
 
 
 module.exports.delete_story = (req, res)=>{
+  
   fs.rmSync("public/"+req.params.story_name, { recursive: true, force: true })
   if(fs.existsSync("storage/stories/"+req.params.story_name+".zip")){
     fs.unlinkSync("storage/stories/"+req.params.story_name+".zip")
