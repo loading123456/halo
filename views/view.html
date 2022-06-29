@@ -39,6 +39,7 @@
         var oReq = new XMLHttpRequest();
         oReq.addEventListener("load", ()=>{
             story_name = oReq.responseText
+            console.log("Story_name: ",story_name)
             change_index(0)
 
         });
