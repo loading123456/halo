@@ -50,16 +50,16 @@ module.exports.identity_story = (req, res)=>{
 }
 
 module.exports.extract_imgs = (req, res)=>{
-  stories.story_name = req.params.story_name
+  let story_name = req.params.story_name
 
-  let action = spawn("python3", ["python3/extract.py",stories.story_name])
+  let action = spawn("python3", ["python3/extract.py",story_name])
 
     action.on("close",()=>{
-      fs.copyFileSync(`/storage/emulated/nexus/halo/'${stories.story_name}.zip`, `/storage/emulated/0/halo/storage/untran_imgs/${stories.story_name}.zip`)
-      fs.unlinkSync(`/storage/emulated/nexus/halo/'${stories.story_name}.zip`)
+      fs.copyFileSync(`/storage/emulated/nexus/halo/'${story_name}.zip`, `/storage/emulated/0/halo/storage/untran_imgs/${stories.story_name}.zip`)
+      fs.unlinkSync(`/storage/emulated/nexus/halo/'${story_name}.zip`)
  
-      stories.stories[stories.story_name].stage =  "Extracting"
-      stories.save(stories.story_name)
+      stories.stories[story_name].stage =  "Extracting"
+      stories.save(story_name)
       res.redirect("/")
     })
     action.stderr.on("data", (err)=>{
@@ -69,16 +69,16 @@ module.exports.extract_imgs = (req, res)=>{
 }
 
 module.exports.rename_imgs = (req, res)=>{
-  story_name = req.params.story_name
+  let story_name = req.params.story_name
   if(  fs.existsSync("storage/tran_imgs/"+story_name+".zip")){
     load_data()
     
     let action = spawn("python3", ["python3/rename.py",story_name])
 
     action.on("close",()=>{
-      story_info["stage"] = "Renaming"
+      stories.stories[story_name].stage = "Renaming"
       res.redirect("/")
-      save()
+      stories.save(story_name)
     })
     action.stderr.on("data", (err)=>{
       console.log(String(err))
@@ -91,16 +91,15 @@ module.exports.rename_imgs = (req, res)=>{
 
 
 module.exports.view_story = (req,res)=>{
-    story_name = req.params.story_name
+    let story_name = req.params.story_name
       load_data()
 
-        fs.rmSync("public/"+req.params.story_name, { recursive: true, force: true })
+        fs.rmSync("public/"+story_name, { recursive: true, force: true })
         let action = spawn("python3", ["python3/view.py",story_name])
-        story_info["stage"] = "Viewing!"
-        save()
+        stories.stories[story_name].stage = "Viewing!"
+        stories.save(story_name)
   
         action.on("close",()=>{
-         
           res.sendFile(path.join(__dirname.replace("controllers", ''), "views/view.html"))
         })
         action.stderr.on("data", (err)=>{

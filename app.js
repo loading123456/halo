@@ -80,7 +80,7 @@ wss.on('connection', function connection(ws) {
           socket_controller[func_name](data, ws);
         }
         else{
-          console.log("Function not exits!")
+          console.log("Function socket not exits!")
         }
     });
 });

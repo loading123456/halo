@@ -18,7 +18,6 @@ module.exports.change_index = (data="", ws)=>{
 
 module.exports.tick = (data="")=>{
     story.page_info[String(story.index)].is_empty = !story.page_info[String(story.index)].is_empty 
-    console.log(story.page_info[String(story.index)].is_empty)
 }
 
 module.exports.save = (data="")=>{
