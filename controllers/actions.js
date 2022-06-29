@@ -1,6 +1,8 @@
 const stories = require("../models/stories")
 const fs = require("fs")
 const {spawn, exec} = require("child_process")
+const path = require("path")
+
 
 let story_names
 let story_info
