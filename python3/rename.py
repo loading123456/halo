@@ -51,7 +51,7 @@ for k in range(0,len(keys)):
         im1.save(str(keys[k])+".jpg")
         out_data.write(str(keys[k])+".jpg")
         os.remove(str(keys[k])+".jpg")
-        names_in_zip.routerend(str(keys[k])+".jpg")
+        names_in_zip.append(str(keys[k])+".jpg")
         i+=1
 
 
@@ -69,7 +69,7 @@ names_r = []
 
 for item in names_in_zip_1:
     if not item in names_in_zip:
-        names_r.routerend(item)
+        names_r.append(item)
 
 for img_name in names_r:
     os.rename(file_name+"/"+img_name, img_name)
