@@ -7,7 +7,7 @@ let _story_name
 module.exports.init_page = (story_name="", ws)=>{
   story = stories.get_story(story_name)
   _story_name = story_name
-  console.log(String(story_name),'\n',story)
+  console.log(btoa(encodeURIComponent(story_name)),'\n',story)
 
   // ws.send(`init_page||${story.pages_number}`)
   // ws.send(`load_page_info||${story.index},${story.page_info[String(story.index)]["is_empty"]}`)
