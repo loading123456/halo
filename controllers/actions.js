@@ -55,8 +55,8 @@ module.exports.extract_imgs = (req, res)=>{
   let action = spawn("python3", ["python3/extract.py",story_name])
 
     action.on("close",()=>{
-      fs.copyFileSync(`/storage/emulated/nexus/halo/'${story_name}.zip`, `/storage/emulated/0/halo/storage/untran_imgs/${story_name}.zip`)
-      fs.unlinkSync(`/storage/emulated/nexus/halo/'${story_name}.zip`)
+      fs.copyFileSync(`/storage/emulated/nexus/halo/${story_name}.zip`, `/storage/emulated/0/halo/storage/untran_imgs/${story_name}.zip`)
+      fs.unlinkSync(`/storage/emulated/nexus/halo/${story_name}.zip`)
  
       stories.stories[story_name].stage =  "Extracting"
       stories.save(story_name)
