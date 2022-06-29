@@ -4,10 +4,6 @@ const {spawn, exec} = require("child_process")
 const path = require("path")
 
 
-let story_names
-let story_info
-let story_name 
-let page_index
 
 
 
@@ -21,7 +17,6 @@ module.exports.get_story_names = (req, res)=>{
 
       res_data[i] = stories.stories[i]["stage"]
     }
-    console.log(res_data)
     res.send(JSON.stringify(res_data))
   
 }
@@ -30,10 +25,10 @@ module.exports.get_story_names = (req, res)=>{
 
 
 module.exports.identity_story = (req, res)=>{
-  story_name = req.params.story_name
+  let story_name = req.params.story_name
 
 
-    fs.rmSync("public/"+req.params.story_name, { recursive: true, force: true })
+    fs.rmSync("public/"+story_name, { recursive: true, force: true })
     let action = spawn("python3", ["python3/extract_zip.py","storage/stories/"+story_name+".zip", "public/"])
 
     action.on("close",()=>{
@@ -44,16 +39,16 @@ module.exports.identity_story = (req, res)=>{
 }
 
 module.exports.extract_imgs = (req, res)=>{
-  story_name = req.params.story_name
+  stories.story_name = req.params.story_name
 
-  let action = spawn("python3", ["python3/extract.py",story_name])
+  let action = spawn("python3", ["python3/extract.py",stories.story_name])
 
     action.on("close",()=>{
-      fs.copyFileSync(`/storage/emulated/nexus/halo/'${story_name}.zip`, `/storage/emulated/0/halo/storage/untran_imgs/${story_name}.zip`)
-      fs.unlinkSync(`/storage/emulated/nexus/halo/'${story_name}.zip`)
+      fs.copyFileSync(`/storage/emulated/nexus/halo/'${stories.story_name}.zip`, `/storage/emulated/0/halo/storage/untran_imgs/${stories.story_name}.zip`)
+      fs.unlinkSync(`/storage/emulated/nexus/halo/'${stories.story_name}.zip`)
  
-      stories.stories[story_name].stage =  "Extracting"
-      stories.save(story_name)
+      stories.stories[stories.story_name].stage =  "Extracting"
+      stories.save(stories.story_name)
       res.redirect("/")
     })
     action.stderr.on("data", (err)=>{

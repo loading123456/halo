@@ -1,25 +1,31 @@
+const stories = require("../models/stories")
 
-module.exports.init_page = (data="", ws)=>{
-    ws.send(`init_page||${story_name},${story_info["pages_number"]}`)
-    ws.send(`load_page_info||${story_info["index"]},${story_info["page_info"][String(page_index)]["is_empty"]}`)
-  story_info["page_info"][String(page_index)].is_readed = true
-  
+
+let story
+let _story_name 
+
+module.exports.init_page = (story_name="", ws)=>{
+  story = stories.get_story(story_name)
+  _story_name = story_name
+
+  ws.send(`init_page||${story.pages_number}`)
+  ws.send(`load_page_info||${story.index},${story.page_info[String(story.index)]["is_empty"]}`)
 }
 
 module.exports.change_index = (data="", ws)=>{
-  if( data>=0 && data<story_info["pages_number"]){
-    story_info["index"] = data
-    page_index = data
-    ws.send(`load_page_info||${story_info["index"]},${story_info["page_info"][String(page_index)].is_empty},`)
 
-    story_info["page_info"][String(page_index)].is_readed = true
+  if( data>=0 && data<story.pages_number){
+    story.index = data
+    stories.stories[_story_name].index = data
+    ws.send(`load_page_info||${story.index},${story.page_info[String(story.index)].is_empty},`)
   }
 }
 
 module.exports.tick = (data="")=>{
-    story_info["page_info"][String(page_index)].is_empty = !story_info["page_info"][String(page_index)].is_empty
+    story.page_info[String(story.index)].is_empty = !story.page_info[String(story.index)].is_empty 
+    stories.stories[_story_name].page_info[String(story.index)] = story.page_info[String(story.index)].is_empty
 }
 
 module.exports.save = (data="")=>{
-    fs.writeFile("./storage/jsons/"+story_name+".json", JSON.stringify(story_info), (err)=>{})
+    stories.save(_story_name)
 }

@@ -71,8 +71,9 @@
 
 // Connection opened
         socket.addEventListener('open', function (event) {
+            story_name = window.location.href.split("/")[4]
             console.log('Connected to WS Server')
-            socket.send("init_page|| ")
+            socket.send(`init_page||${story_name}`)
         });
 
 // Listen for messages
@@ -84,8 +85,7 @@
         
 
         function init_page(data){
-            story_name = data.split(',')[0]
-            pages_number = data.split(",")[1]
+            pages_number = data
         }
 
 
