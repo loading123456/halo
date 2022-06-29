@@ -35,7 +35,7 @@ router.post("/view/:story_name", (req, res)=>{
 })
 
 router.get("/get_story_name_view", (req, res)=>{
-  res.send(story_name)
+  actions.get_story_name_view(req, res)
 })
 
 router.post("/delete/:story_name", (req, res)=>{

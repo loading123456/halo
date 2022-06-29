@@ -124,6 +124,10 @@ module.exports.delete_story = (req, res)=>{
   res.sendFile(path.join(__dirname, "view/index.html"))
 }
 
+module.exports.get_story_name_view = (req, res)=>{
+  res.send(story.story_name)
+}
+
 module.exports.close_server = (req, res)=>{
   console.log("CLose")
   process.exit()
