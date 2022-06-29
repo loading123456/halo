@@ -6,9 +6,7 @@ const actions = require("../controllers/actions")
 
 
 router.get("/", (req, res)=>{
-    res.sendFile(path.join(__dirname.replace("routes", ''), "views/index.html"))
-
-
+  actions.come_to_index(req, res)
 })
 
 

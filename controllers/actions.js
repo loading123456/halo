@@ -7,7 +7,11 @@ const path = require("path")
 
 
 
-
+module.exports.come_to_index = (req, res)=>{
+  res.sendFile(path.join(__dirname.replace("controllers", ''), "views/index.html"))
+  console.log(fs.readFileSync("./"))
+  // fs.rmSync("public/"+req.params.story_name, { recursive: true, force: true })
+}
 
 module.exports.get_story_names = (req, res)=>{
   
