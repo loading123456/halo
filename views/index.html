@@ -129,7 +129,7 @@
               name_button.addEventListener("focus", ()=>{
                   btn_click(name_button)
               })    
-              container_tag.routerendChild(name_button)       
+              container_tag.appendChild(name_button)       
           }
         });
         oReq.open("GET", "get_story_names");
