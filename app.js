@@ -35,6 +35,10 @@ function format_stories(t, _stories){
   if(_stories.length > 0){
     let action = spawn("python3", ["python3/format.py", _stories[t].replace(".zip",'')])
 
+    action.stderr.on("data", (err)=>{
+      console.log(String(err))
+    })
+
     action.on("close", ()=>{
       if(t+1 == _stories.length){
         console.log("Full")
