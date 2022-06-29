@@ -21,5 +21,7 @@ module.exports.tick = (data="")=>{
 }
 
 module.exports.save = (data="")=>{
-    story.save()
+  console.log("Save in socket")  
+  story.save()
+
 }

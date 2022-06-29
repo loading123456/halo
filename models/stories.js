@@ -17,5 +17,7 @@ module.exports.get_story = (story_name)=>{
 }
 
 module.exports.save = (story_name)=>{
+    console.log("save in stories")
+    console.log(this.stories[story_name])
     fs.writeFileSync(`./storage/jsons/${story_name}.json`, JSON.stringify(this.stories[story_name]))
 }
