@@ -26,10 +26,10 @@ dirFiles = []
 
 for x in os.listdir(file_name):
     if ord(x[0]) > 57:
-        dirFiles.routerend(str(ord(x[0]))+x[1:].zfill(9))
+        dirFiles.append(str(ord(x[0]))+x[1:].zfill(9))
 
     else:
-        dirFiles.routerend(x.zfill(8))
+        dirFiles.append(x.zfill(8))
     os.rename(file_name+"/"+x, file_name+"/"+dirFiles[-1])
 
 dirFiles = sorted(dirFiles)
