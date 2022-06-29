@@ -1,10 +1,12 @@
 const stories = require("../models/stories")
-
+const fs = require("fs")
 
 let story_names
 let story_info
 let story_name 
 let page_index
+
+
 
 
 
@@ -27,44 +29,29 @@ module.exports.get_story_names = (req, res)=>{
 module.exports.identity_story = (req, res)=>{
   story_name = req.params.story_name
 
-    load_data()
 
     fs.rmSync("public/"+req.params.story_name, { recursive: true, force: true })
     let action = spawn("python3", ["python3/extract_zip.py","storage/stories/"+story_name+".zip", "public/"])
-  
-    action.on("close",()=>{
-      res.sendFile(path.join(__dirname, "view/identity.html"))
-      story_info["stage"] = "Identiting"
-      save()
-    })
 
+    action.on("close",()=>{
+      res.sendFile(path.join(__dirname.replace("controllers", ''), "view/identity.html"))
+      stories.stories[story_name].stage = "Identiting"
+      stories.save(story_name)
+    })
 }
 
 module.exports.extract_imgs = (req, res)=>{
   story_name = req.params.story_name
-    load_data()
 
-    let action = spawn("python3", ["python3/extract.py",story_name])
+  let action = spawn("python3", ["python3/extract.py",story_name])
 
     action.on("close",()=>{
-      exec(`cp /storage/emulated/nexus/halo/'${story_name}.zip' /storage/emulated/0/halo/storage/untran_imgs`, (err)=>{
-        if(err){
-          console.log("error in line 205")
-        }
-        else{
-          exec(`rm -r '${story_name}.zip'`,  (err)=>{
-            if(err){
-              console.log("error in line 210")
-            }
-            else{
-              story_info["stage"] = "Extracting"
-              res.redirect("/")
-              save()
-            }
-          })
-        }
-      })
-
+      fs.copyFileSync(`/storage/emulated/nexus/halo/'${story_name}.zip`, `/storage/emulated/0/halo/storage/untran_imgs/${story_name}.zip`)
+      fs.unlinkSync(`/storage/emulated/nexus/halo/'${story_name}.zip`)
+ 
+      stories.stories[story_name].stage =  "Extracting"
+      stories.save(story_name)
+      res.redirect("/")
     })
     action.stderr.on("data", (err)=>{
       console.log(String(err))
@@ -131,6 +118,10 @@ module.exports.delete_story = (req, res)=>{
   res.sendFile(path.join(__dirname, "view/index.html"))
 }
 
+module.exports.close_server = (req, res)=>{
+  console.log("CLose")
+  process.exit()
+}
 
 
 

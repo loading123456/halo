@@ -10,3 +10,7 @@ module.exports.load_stories = ()=>{
         this.stories[json_files[i].replace(".json", '')] = JSON.parse(fs.readFileSync(`./storage/jsons/${json_files[i]}`))
     }
 }
+
+module.exports.save = (story_name)=>{
+    fs.writeFileSync(`./storage/jsons/${story_name}.json`, JSON.stringify(this.stories[story_name]))
+}

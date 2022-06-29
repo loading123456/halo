@@ -20,20 +20,20 @@ router.get("/get_story_names", (req, res)=>{
 
 
 router.post("/identity/:story_name", (req, res)=>{
-  identity_story(req, res)
+  actions.identity_story(req, res)
 })
 
 router.post("/extract/:story_name", (req, res)=>{
-  extract_imgs(req, res)
+  actions.extract_imgs(req, res)
 })
 
 
 router.post("/rename/:story_name", (req, res)=>{
-  rename_imgs(req, res)
+  actions.rename_imgs(req, res)
 })
 
 router.post("/view/:story_name", (req, res)=>{
-  view_story(req, res)
+  actions.view_story(req, res)
 })
 
 router.get("/get_story_name_view", (req, res)=>{
@@ -41,15 +41,12 @@ router.get("/get_story_name_view", (req, res)=>{
 })
 
 router.post("/delete/:story_name", (req, res)=>{
-  delete_story(req, res)
+  actions.delete_story(req, res)
 })
 
 router.get("/close_server", (req, res)=>{
-  if(story_info !=undefined){
-    save()
-  }
-  console.log("CLose")
-  process.exit()
+  
+  actions.close_server(req, res)
 
 })
 
