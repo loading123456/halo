@@ -78,7 +78,6 @@ wss.on('connection', function connection(ws) {
         let data = String(message).split("||")[1]
         if (func_name in socket_controller && typeof socket_controller[func_name] === "function") {
           socket_controller[func_name](data, ws);
-          socket_controller[func_name](data, ws)
         }
         else{
           console.log("Function not exits!")
