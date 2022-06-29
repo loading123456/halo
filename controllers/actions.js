@@ -8,9 +8,15 @@ const path = require("path")
 
 
 module.exports.come_to_index = (req, res)=>{
+  let files_in_public = fs.readdirSync("public")
+
+  for(let i=0; i<files_in_public; i++){
+    fs.rmSync("public/"+files_in_public[i], { recursive: true, force: true })
+  }
+
   res.sendFile(path.join(__dirname.replace("controllers", ''), "views/index.html"))
-  console.log(fs.readdirSync("./"))
-  // fs.rmSync("public/"+req.params.story_name, { recursive: true, force: true })
+
+
 }
 
 module.exports.get_story_names = (req, res)=>{

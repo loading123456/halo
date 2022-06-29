@@ -9,8 +9,8 @@ module.exports.init_page = (story_name="", ws)=>{
   _story_name = story_name
   console.log(story_name,'\n',story)
 
-  ws.send(`init_page||${story.pages_number}`)
-  ws.send(`load_page_info||${story.index},${story.page_info[String(story.index)]["is_empty"]}`)
+  // ws.send(`init_page||${story.pages_number}`)
+  // ws.send(`load_page_info||${story.index},${story.page_info[String(story.index)]["is_empty"]}`)
 }
 
 module.exports.change_index = (data="", ws)=>{
