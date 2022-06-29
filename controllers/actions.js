@@ -71,7 +71,6 @@ module.exports.extract_imgs = (req, res)=>{
 module.exports.rename_imgs = (req, res)=>{
   let story_name = req.params.story_name
   if(  fs.existsSync("storage/tran_imgs/"+story_name+".zip")){
-    load_data()
     
     let action = spawn("python3", ["python3/rename.py",story_name])
 
@@ -92,7 +91,6 @@ module.exports.rename_imgs = (req, res)=>{
 
 module.exports.view_story = (req,res)=>{
     let story_name = req.params.story_name
-      load_data()
 
         fs.rmSync("public/"+story_name, { recursive: true, force: true })
         let action = spawn("python3", ["python3/view.py",story_name])
