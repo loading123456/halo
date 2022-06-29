@@ -3,6 +3,7 @@ const fs = require("fs")
 
 module.exports.stories = {}
 
+
 module.exports.load_stories = ()=>{
     let json_files = fs.readdirSync("./storage/jsons")
 

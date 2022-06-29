@@ -1,4 +1,5 @@
 const stories = require("../models/stories")
+const story = require("../models/story")
 const fs = require("fs")
 const {spawn, exec} = require("child_process")
 const path = require("path")
@@ -36,7 +37,7 @@ module.exports.get_story_names = (req, res)=>{
 
 module.exports.identity_story = (req, res)=>{
   let story_name = req.params.story_name
-
+    story.load_story(story_name)
 
     fs.rmSync("public/"+story_name, { recursive: true, force: true })
     let action = spawn("python3", ["python3/extract_zip.py","storage/stories/"+story_name+".zip", "public/"])
