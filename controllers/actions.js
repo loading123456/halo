@@ -37,7 +37,7 @@ module.exports.identity_story = (req, res)=>{
     let action = spawn("python3", ["python3/extract_zip.py","storage/stories/"+story_name+".zip", "public/"])
 
     action.on("close",()=>{
-      res.sendFile(path.join(__dirname.replace("controllers", ''), "view/identity.html"))
+      res.sendFile(path.join(__dirname.replace("controllers", ''), "views/identity.html"))
       stories.stories[story_name].stage = "Identiting"
       stories.save(story_name)
     })
@@ -95,7 +95,7 @@ module.exports.view_story = (req,res)=>{
   
         action.on("close",()=>{
          
-          res.sendFile(path.join(__dirname, "view/view.html"))
+          res.sendFile(path.join(__dirname.replace("controllers", ''), "views/view.html"))
         })
         action.stderr.on("data", (err)=>{
           console.log(String(err))
