@@ -40,6 +40,7 @@ for img_name in dirFiles:
     output_data.write(str(i)+".jpg")
     os.remove(str(i)+".jpg")
     i += 1
+    _time+=100
 
 data = {"stage":"Identiting", "page_info":{}, "index":0,"pages_number":pages_number}
 for i in range(pages_number):
